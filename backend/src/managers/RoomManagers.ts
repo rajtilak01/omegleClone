@@ -13,7 +13,7 @@ export class RoomManager {
     this.rooms = new Map<string, Room>();
   }
   createRoom(user1: User, user2: User) {
-    const roomid = this.generate();
+    const roomid = this.generate().toString();
     this.rooms.set(roomid.toString(), {
       user1,
       user2,
@@ -27,15 +27,17 @@ export class RoomManager {
   onOffer(roomid: string, sdp: string){
     const user2 = this.rooms.get(roomid)?.user2;
     user2?.socket.emit("offer", {
-        sdp
-    })
-  }
-
-  onAnswer(roomid: string, sdp: string) {
-    const user1 = this.rooms.get(roomid)?.user1;
-    user1?.socket.emit("offer", {
-        sdp
-    })
+        sdp,
+        roomid
+      })
+    }
+    
+    onAnswer(roomid: string, sdp: string) {
+      const user1 = this.rooms.get(roomid)?.user1;
+      user1?.socket.emit("answer", {
+        sdp,
+        roomid
+      })
   }
   generate() {
 
